@@ -1,5 +1,6 @@
 package com.tzeentch.teacherhelper.android
 
+
 import android.content.ContentValues
 import android.provider.MediaStore
 import android.util.Log
@@ -130,3 +131,4 @@ fun CameraScreen() {
         }
     }
 }
+

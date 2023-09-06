@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.tzeentch.teacherhelper.android"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.tzeentch.teacherhelper.android"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    val nav_version = "2.7.1"
     implementation(project(":shared"))
     implementation("androidx.compose.ui:ui:1.4.3")
     implementation("androidx.compose.ui:ui-tooling:1.4.3")
@@ -55,4 +56,5 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.3.0-rc01")
     implementation("androidx.camera:camera-lifecycle:1.3.0-rc01")
     implementation("androidx.camera:camera-view:1.3.0-rc01")
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 }
