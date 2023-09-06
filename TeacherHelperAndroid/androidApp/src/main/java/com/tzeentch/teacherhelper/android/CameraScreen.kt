@@ -28,15 +28,15 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.googlecode.tesseract.android.TessBaseAPI
 import com.tzeentch.teacherhelper.android.Helper.convertUriToBitmap
 import kotlinx.coroutines.launch
 import java.io.File
 
 
-@Preview
 @Composable
-fun CameraScreen() {
+fun CameraScreen(navController: NavController) {
     val coroutineScope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
