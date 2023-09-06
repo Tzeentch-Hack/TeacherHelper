@@ -1,5 +1,8 @@
 package com.tzeentch.teacherhelper.di
 
+import com.tzeentch.teacherhelper.AuthPresenter
+import com.tzeentch.teacherhelper.AuthRepository
+import com.tzeentch.teacherhelper.AuthRepositoryImpl
 import com.tzeentch.teacherhelper.MainPresenter
 import com.tzeentch.teacherhelper.MainRepository
 import com.tzeentch.teacherhelper.MainRepositoryImpl
@@ -60,4 +63,7 @@ fun injectionModule(enableNetworkLogs: Boolean = false) = module {
 
     single<MainRepository> { MainRepositoryImpl(httpClient = get()) }
     factoryOf(::MainPresenter)
+
+    single<AuthRepository> { AuthRepositoryImpl(httpClient = get()) }
+    factoryOf(::AuthPresenter)
 }

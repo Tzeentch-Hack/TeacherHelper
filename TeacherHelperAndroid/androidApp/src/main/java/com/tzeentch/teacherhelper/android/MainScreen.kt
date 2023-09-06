@@ -27,67 +27,67 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tzeentch.teacherhelper.R
 
-@Composable
-fun MainScreen(
-    navController: String
-) {
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun MainScreen(
-    onScanButtonClicked: () -> Unit
-) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                title = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.main_screen_title),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.W500
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Button(
-                modifier = Modifier.padding(bottom = 16.dp).size(50.dp),
-                onClick = { onScanButtonClicked() },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White
-                ),
-                shape = CircleShape
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_event_note_24),
-                    contentDescription = stringResource(
-                        id = R.string.main_screen_title
-                    )
-                )
-            }
-        }
-    }
-}
-
-@Composable
-@Preview
-fun MainScreenPreview() {
-    MainScreen(
-        onScanButtonClicked = {}
-    )
-}
+//@Composable
+//fun MainScreen(
+//    navController: String
+//) {
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//private fun MainScreen(
+//    onScanButtonClicked: () -> Unit
+//) {
+//    Scaffold(
+//        modifier = Modifier.fillMaxSize(),
+//        topBar = {
+//            TopAppBar(
+//                modifier = Modifier.fillMaxWidth(),
+//                title = {
+//                    Row(
+//                        modifier = Modifier.fillMaxWidth(),
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center
+//                    ) {
+//                        Text(
+//                            text = stringResource(id = R.string.main_screen_title),
+//                            fontSize = 20.sp,
+//                            fontWeight = FontWeight.W500
+//                        )
+//                    }
+//                }
+//            )
+//        }
+//    ) { innerPadding ->
+//        Box(
+//            modifier = Modifier
+//                .padding(innerPadding)
+//                .fillMaxSize(),
+//            contentAlignment = Alignment.BottomCenter
+//        ) {
+//            Button(
+//                modifier = Modifier.padding(bottom = 16.dp).size(50.dp),
+//                onClick = { onScanButtonClicked() },
+//                colors = ButtonDefaults.buttonColors(
+//                    backgroundColor = Color.White
+//                ),
+//                shape = CircleShape
+//            ) {
+//                Image(
+//                    painter = painterResource(id = R.drawable.baseline_event_note_24),
+//                    contentDescription = stringResource(
+//                        id = R.string.main_screen_title
+//                    )
+//                )
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//@Preview
+//fun MainScreenPreview() {
+//    MainScreen(
+//        onScanButtonClicked = {}
+//    )
+//}
