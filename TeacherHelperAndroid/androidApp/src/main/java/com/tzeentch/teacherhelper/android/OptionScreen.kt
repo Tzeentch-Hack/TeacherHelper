@@ -25,17 +25,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tzeentch.teacherhelper.R
+import androidx.navigation.NavController
 
 @Composable
-fun MainScreen(
-    navController: String
+fun OptionScreen(
+    navController: NavController
 ) {
+
+    OptionScreen(
+        onScanButtonClicked = { navController.navigate(MainSections.CameraSection.destination) }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MainScreen(
+private fun OptionScreen(
     onScanButtonClicked: () -> Unit
 ) {
     Scaffold(
@@ -66,7 +70,9 @@ private fun MainScreen(
             contentAlignment = Alignment.BottomCenter
         ) {
             Button(
-                modifier = Modifier.padding(bottom = 16.dp).size(50.dp),
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .size(50.dp),
                 onClick = { onScanButtonClicked() },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.White
@@ -76,18 +82,10 @@ private fun MainScreen(
                 Image(
                     painter = painterResource(id = R.drawable.baseline_event_note_24),
                     contentDescription = stringResource(
-                        id = R.string.main_screen_title
+                        id = R.string.image_description
                     )
                 )
             }
         }
     }
-}
-
-@Composable
-@Preview
-fun MainScreenPreview() {
-    MainScreen(
-        onScanButtonClicked = {}
-    )
 }

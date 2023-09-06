@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace = "com.tzeentch.teacherhelper.android"
-    compileSdk = 33
+    compileSdk = 34
     defaultConfig {
         applicationId = "com.tzeentch.teacherhelper.android"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    val nav_version = "2.7.1"
     implementation(project(":shared"))
     implementation("androidx.compose.ui:ui:1.4.3")
     implementation("androidx.compose.ui:ui-tooling:1.4.3")
@@ -52,4 +53,5 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.4.0")
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
     implementation("cz.adaptech.tesseract4android:tesseract4android-openmp:4.5.0")
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 }
