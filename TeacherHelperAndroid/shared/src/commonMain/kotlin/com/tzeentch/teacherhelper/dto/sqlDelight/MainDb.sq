@@ -1,0 +1,16 @@
+CREATE TABLE MainDb (
+    name TEXT DEFAULT "",
+    password TEXT DEFAULT "",
+    token TEXT DEFAULT ""
+);
+
+newUser:
+REPLACE INTO MainDb(name, password,token)VALUES(?,?,?);
+
+
+updateToken:
+UPDATE MainDb SET token=?;
+
+getUser:
+SELECT * FROM MainDb LIMIT 1;
+

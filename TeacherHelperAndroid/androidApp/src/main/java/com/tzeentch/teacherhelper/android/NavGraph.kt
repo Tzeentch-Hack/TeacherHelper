@@ -17,7 +17,7 @@ sealed class MainSections(val destination: String) {
 @Composable
 fun NavGraph(
     modifier: Modifier,
-    startDestination: String = MainSections.OptionSection.destination
+    startDestination: String = MainSections.CameraSection.destination
 ) {
     val navController = rememberNavController()
     NavHost(

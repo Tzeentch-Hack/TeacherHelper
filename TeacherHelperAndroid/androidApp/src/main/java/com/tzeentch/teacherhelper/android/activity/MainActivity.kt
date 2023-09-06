@@ -8,7 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.tzeentch.teacherhelper.android.MyApplicationTheme
-import com.tzeentch.teacherhelper.android.TeacherHelperApp
+import com.tzeentch.teacherhelper.android.utils.TeacherHelperApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

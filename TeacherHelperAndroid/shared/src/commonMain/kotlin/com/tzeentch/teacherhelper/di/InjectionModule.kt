@@ -1,11 +1,22 @@
 package com.tzeentch.teacherhelper.di
 
-import com.tzeentch.teacherhelper.AuthPresenter
-import com.tzeentch.teacherhelper.AuthRepository
-import com.tzeentch.teacherhelper.AuthRepositoryImpl
-import com.tzeentch.teacherhelper.MainPresenter
-import com.tzeentch.teacherhelper.MainRepository
-import com.tzeentch.teacherhelper.MainRepositoryImpl
+import com.tzeentch.teacherhelper.presenters.AuthPresenter
+import com.tzeentch.teacherhelper.presenters.CameraPresenter
+import com.tzeentch.teacherhelper.presenters.DetailsPresenter
+import com.tzeentch.teacherhelper.presenters.LoginPresenter
+import com.tzeentch.teacherhelper.repository.AuthRepository
+import com.tzeentch.teacherhelper.repository.AuthRepositoryImpl
+import com.tzeentch.teacherhelper.presenters.MainPresenter
+import com.tzeentch.teacherhelper.repository.CameraRepository
+import com.tzeentch.teacherhelper.repository.CameraRepositoryImpl
+import com.tzeentch.teacherhelper.repository.DbRepository
+import com.tzeentch.teacherhelper.repository.DbRepositoryImpl
+import com.tzeentch.teacherhelper.repository.DetailsRepository
+import com.tzeentch.teacherhelper.repository.DetailsRepositoryImpl
+import com.tzeentch.teacherhelper.repository.LoginRepository
+import com.tzeentch.teacherhelper.repository.LoginRepositoryImpl
+import com.tzeentch.teacherhelper.repository.MainRepository
+import com.tzeentch.teacherhelper.repository.MainRepositoryImpl
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -19,9 +30,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.factoryOf
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 
@@ -66,4 +75,19 @@ fun injectionModule(enableNetworkLogs: Boolean = false) = module {
 
     single<AuthRepository> { AuthRepositoryImpl(httpClient = get()) }
     factoryOf(::AuthPresenter)
+
+    single<CameraRepository> { CameraRepositoryImpl(httpClient = get()) }
+    factoryOf(::CameraPresenter)
+
+    single<LoginRepository> { LoginRepositoryImpl(httpClient = get()) }
+    factoryOf(::LoginPresenter)
+
+    single<DetailsRepository> { DetailsRepositoryImpl(httpClient = get()) }
+    factoryOf(::DetailsPresenter)
+
+    single<DbRepository> {
+        DbRepositoryImpl(
+            mainDbDriverFactory = get()
+        )
+    }
 }

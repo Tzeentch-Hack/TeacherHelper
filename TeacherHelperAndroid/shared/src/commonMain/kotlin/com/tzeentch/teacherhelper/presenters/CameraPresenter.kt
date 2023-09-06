@@ -1,0 +1,10 @@
+package com.tzeentch.teacherhelper.presenters
+
+import com.tzeentch.teacherhelper.repository.CameraRepository
+import org.koin.core.component.KoinComponent
+
+class CameraPresenter constructor(
+    private val repository: CameraRepository
+) : KoinComponent {
+
+}

@@ -1,13 +1,16 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+val ktorVersion = "2.2.4"
+val sqlDelightVersion = "1.5.5"
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.squareup.sqldelight")
 }
-val ktorVersion = "2.2.4"
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
-
     android {
         compilations.all {
             kotlinOptions {
@@ -46,6 +49,35 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
+
+        val androidMain by getting {
+            dependsOn(commonMain)
+            dependencies {
+                implementation("com.squareup.sqldelight:android-driver:$sqlDelightVersion")
+            }
+        }
+        val androidUnitTest by getting
+        val iosX64Main by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+            dependencies {
+                implementation("com.squareup.sqldelight:native-driver:$sqlDelightVersion")
+            }
+        }
+        val iosX64Test by getting
+        val iosArm64Test by getting
+        val iosSimulatorArm64Test by getting
+        val iosTest by creating {
+            dependsOn(commonTest)
+            iosX64Test.dependsOn(this)
+            iosArm64Test.dependsOn(this)
+            iosSimulatorArm64Test.dependsOn(this)
+        }
     }
 }
 
@@ -54,5 +86,13 @@ android {
     compileSdk = 33
     defaultConfig {
         minSdk = 24
+    }
+}
+
+sqldelight {
+    database("AppDb") {
+        packageName = "com.tzeentch.teacherhelper.dto.sqldelight"
+        sourceFolders = listOf("kotlin")
+        dialect = "sqlite:3.24"
     }
 }
