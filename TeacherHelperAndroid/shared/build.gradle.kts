@@ -6,6 +6,7 @@ val sqlDelightVersion = "1.5.5"
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20"
     id("com.squareup.sqldelight")
 }
 
