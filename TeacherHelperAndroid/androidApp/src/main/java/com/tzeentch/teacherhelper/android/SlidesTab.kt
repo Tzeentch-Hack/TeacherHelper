@@ -2,6 +2,7 @@ package com.tzeentch.teacherhelper.android
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,21 +68,25 @@ fun SlidesTab(
                 )
             }
             item {
-                Button(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    onClick = { context.startActivity(intent) },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF304040)
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        modifier = Modifier.padding(vertical = 4.dp),
-                        text = stringResource(id = R.string.download_pptx_text),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.W500,
-                        color = Color(0xFFC9D1C8)
-                    )
+                AnimatedVisibility(visible = imagesUrls.isNotEmpty()) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        onClick = { context.startActivity(intent) },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color(0xFF304040)
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            text = stringResource(id = R.string.download_pptx_text),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.W500,
+                            color = Color(0xFFC9D1C8)
+                        )
+                    }
                 }
             }
         }
