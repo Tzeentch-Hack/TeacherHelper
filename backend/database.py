@@ -2,7 +2,7 @@ import sqlalchemy.sql.sqltypes
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column, Integer, String, BOOLEAN
+from sqlalchemy import Column, Integer, String, BOOLEAN, JSON
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./databases/users.db"
@@ -32,6 +32,14 @@ class RequestItem(Base):
     username = Column(String)
     status = Column(String)
     request_id = Column(String)
+    task_id = Column(String)
+    pptx_url = Column(String)
+    images_url = Column(JSON)
+    short_text = Column(String)
+    teaching_recommendations = Column(JSON)
+    lesson_estimates = Column(JSON)
+    possible_questions = Column(JSON)
+
 
     def to_dict(self):
         return {

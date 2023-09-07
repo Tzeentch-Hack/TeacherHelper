@@ -10,9 +10,9 @@ KEY_LESSON_STRUCTURE_AND_ESTIMATES = 'lesson_structure_and_estimates'
 KEY_POSSIBLE_QUESTIONS = 'possible_questions'
 
 class TextAnalyzer:
-    def __init__(self):
-        self.model = 'gpt-3.5-turbo'
-        self.max_tokens = 1500
+    def __init__(self, model, max_tokens):
+        self.model = model
+        self.max_tokens = max_tokens
         self.prompt = "Text to analyze:\n"
         self.text_generator = TextGenerator(self.model, self.max_tokens)
         self.translator = GoogleTranslator()
@@ -29,8 +29,8 @@ class TextAnalyzer:
 
 
         if detected_language != 'en':
-            return self.translator.translate(gpt_response, 'en', detected_language)
-        return gpt_response
+            return self.translator.translate(gpt_response, 'en', detected_language), gpt_response
+        return gpt_response, gpt_response
 
     def _parse_presentation_parts(self, text):
         topics = re.split(r'\d+\.', text)[1:]
@@ -50,24 +50,42 @@ class TextAnalyzer:
 
     def get_presentation_parts(self, input_text):
         system_instruction = (
-            "From the text, extract 4-5 key topics and present them sequentially. For each topic, provide a brief structured description consisting of 3-4 points. Format as follows:\n\n1. [Topic Name]: \n- First option\n- Second option\n- Third option\n2. [Next Topic Name]: \n- First option\n- Second option\n- Third option\n3. ...\nEnsure each entry is numbered up to 4 or 5, and that the topic is clearly separated from its point-form description.")
-        gpt_response = self._gpt_query(system_instruction, input_text)
-        return self._parse_presentation_parts(gpt_response)
+            "From the text, extract 4-5 key topics and present them sequentially. For each topic, provide a brief structured description consisting of 3-4 points. Format as follows:\n\n1. [Topic Name]: \n- First option\n- Second option\n- Third option\n2. [Next Topic Name]: \n- First option\n- Second option\n- Third option\n3. ...\nEnsure each entry is numbered up to 4 or 5, and that the topic is clearly separated from its point-form description. Make each option ONE SHORT, CONCISE sentence with FEW words")
+        gpt_response_source, gpt_response_en = self._gpt_query(system_instruction, input_text)
+        return self._parse_presentation_parts(gpt_response_source), self._parse_presentation_parts(gpt_response_en), gpt_response_source
+
+    def get_picture_descriptions(self, presentation_parts):
+        topics = [part['topic_name'][:-1] for part in presentation_parts]
+        topics_str = ', '.join(topics)
+
+        system_instruction = (
+            "For each topic listed, visualize a minimal scene or object that captures its essence. "
+            "Write each description in a few key words. Avoid full sentences.")
+
+        gpt_response_source, gpt_response_en = self._gpt_query(system_instruction, "Topics to describe:" + topics_str)
+
+        # Modified regex pattern to capture numbered descriptions better
+        pattern = r'(\d+\.\s*[^0-9]+)(?=\d+\.|$)'
+        descriptions = [match.group(1).split('.')[1].strip().split(": ")[1] for match in
+                        re.finditer(pattern, gpt_response_en)]
+
+        return descriptions
+
 
     def get_teaching_recommendations(self, input_text):
         system_instruction = ("You are an expert to provide recommendations on how to teach a lesson based on the text provided. List them as:\n1. ...\n2. ...\n3. ...")
-        gpt_response = self._gpt_query(system_instruction, input_text)
-        return self._parse_list_output(gpt_response)
+        gpt_response_source, gpt_response_en = self._gpt_query(system_instruction, input_text)
+        return self._parse_list_output(gpt_response_source)
 
     def get_lesson_structure_and_estimates(self, input_text):
         system_instruction = ("You are an expert who can create a perfect structure for a lesson and also estimate the duration for each part based on the text provided. List them as:\n1. ...\n2. ...\n3. ...")
-        gpt_response = self._gpt_query(system_instruction, input_text)
-        return self._parse_list_output(gpt_response)
+        gpt_response_source, gpt_response_en = self._gpt_query(system_instruction, input_text)
+        return self._parse_list_output(gpt_response_source)
 
     def get_possible_questions(self, input_text):
         system_instruction = ("You are an expert at making possible questions students might have from the text provided. List them as:\n1. Question ...\n2. Question ...\n3. Question ...")
-        gpt_response = self._gpt_query(system_instruction, input_text)
-        return self._parse_list_output(gpt_response)
+        gpt_response_source, gpt_response_en = self._gpt_query(system_instruction, input_text)
+        return self._parse_list_output(gpt_response_source)
 
     def analyze_presentation(self, input_text):
         with ThreadPoolExecutor(max_workers=1) as executor:
@@ -95,7 +113,7 @@ class TextAnalyzer:
 
 if __name__ == "__main__":
     start = time.time()
-    analyzer = TextAnalyzer()
+    analyzer = TextAnalyzer('gpt-3.5-turbo', max_tokens=1500)
     uzb_text = """Vatan – bu biz tug‘ilib o‘sgan zamin, kindik qoni-
                 miz to‘kilgan tuproq, bobolarimiz izlari qolgan,
                 ajdodlarimiz merosi avlodlarimizga qoladigan
@@ -117,10 +135,13 @@ if __name__ == "__main__":
                 vaffaqiyat va zafarlari, yo‘qotish va qurbonlari, quvonch va iztiroblari bi-
                 lan xolis va haqqoniy o‘rganilgan taqdirdagina chinakam tarix bo‘ladi."""
     start = time.time()
-    analyzed_presentation = analyzer.analyze_presentation(uzb_text)
-    print('analyzed_presentation:', analyzed_presentation)
+    analyzed_presentation_source, analyzed_presentation_eng, source_text = analyzer.analyze_presentation(uzb_text)
+    print('analyzed_presentation source:', analyzed_presentation_source)
+    print('analyzed_presentation eng:', analyzed_presentation_eng)
+    picture_descriptions = analyzer.get_picture_descriptions(analyzed_presentation_eng)
+    print('Picture Descriptions:', picture_descriptions)
     end = time.time()
-    print('taken time for presentation:', end - start)
+    print('time taken for picture descriptions:', end - start)
 
 
     start = time.time()

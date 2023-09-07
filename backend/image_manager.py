@@ -23,6 +23,7 @@ def set_images_to_user(username, request_id, image_datas):
         for image_data in image_datas:
             with open(os.path.join(request_path, image_data.filename), 'wb') as f:
                 f.write(image_data.content)
+        return os.listdir(request_path)
     except Exception("I\\O error") as e:
         raise e
 

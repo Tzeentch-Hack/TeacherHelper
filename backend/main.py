@@ -2,9 +2,10 @@ from typing import Annotated, List
 
 from fastapi import Depends, FastAPI, File, UploadFile
 from fastapi.security import OAuth2PasswordBearer
-
-
+from backend.src.pipeline import Pipeline
+from backend.worker import infer_whole_task
 import uvicorn
+from celery.result import AsyncResult
 
 import models
 import database
@@ -15,7 +16,7 @@ import requestManagement
 
 app = FastAPI()
 app.include_router(authorization.router)
-
+pipeline = Pipeline()
 
 def get_request_id():
     current_request_count = requestManagement.get_request_count()
@@ -41,11 +42,11 @@ def create_request(current_user: Annotated[models.User, Depends(authorization.ge
         finally:
             file.file.close()
     request_id = get_request_id()
+
+    image_paths = image_manager.set_images_to_user(current_user.username, request_id, image_datas)
+    task = infer_whole_task.delay(pipeline, image_paths)
     requestManagement.add_processed_request(models.ProcessedRequest(status="process", request_id=request_id,
-                                            username=current_user.username))
-    image_manager.set_images_to_user(current_user.username, request_id, image_datas)
-    # logica
-    # ot Igorya
+                                            username=current_user.username, task_id=task.id))
     requestManagement.increment_request_count()
     return {"request_id": request_id}
 
@@ -76,9 +77,30 @@ def delete_request(current_user: Annotated[models.User, Depends(authorization.ge
 def check_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
                   request_id: str):
     pr = requestManagement.get_processed_request(request_id)
-    response_body = {"request_id": pr.request_id}
-    return response_body
 
+    # Use the AsyncResult class to fetch task's state and result
+    task = AsyncResult(pr.task_id, app=celery_app)
+
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'status': 'Task is still processing'
+        }
+        pr.status = response['status']
+    elif task.state == 'SUCCESS':
+        response = {
+            'state': task.state,
+            'result': task.result
+        }
+        pr.status = response['status']
+        pr.
+    else:
+        response = {
+            'state': task.state,
+            'status': str(task.info)
+        }
+        pr.status = response['status']
+    return response_body
 
 
 if __name__ == "__main__":
