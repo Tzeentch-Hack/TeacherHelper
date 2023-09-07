@@ -95,6 +95,10 @@ fun LoginScreen(
             navController.navigate(MainSection.OPTION_ROUTE)
         }
 
+        AuthUiState.Loading -> {
+            RotatingProgressBar()
+        }
+
         else -> {
 
         }

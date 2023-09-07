@@ -28,13 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.googlecode.tesseract.android.TessBaseAPI
-import com.tzeentch.teacherhelper.android.utils.Assets
-import com.tzeentch.teacherhelper.android.utils.Helper.convertUriToBitmap
 import com.tzeentch.teacherhelper.android.utils.Helper.convertUriToFile
 import com.tzeentch.teacherhelper.android.utils.getCameraProvider
 import com.tzeentch.teacherhelper.presenters.CameraPresenter
@@ -159,7 +155,7 @@ fun CameraScreen(navController: NavController, presenter: CameraPresenter = koin
         }
 
         CameraUiState.Loading -> {
-
+            RotatingProgressBar()
         }
     }
 
