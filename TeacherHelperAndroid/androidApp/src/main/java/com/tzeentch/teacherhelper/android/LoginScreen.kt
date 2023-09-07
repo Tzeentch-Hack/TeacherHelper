@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.tzeentch.teacherhelper.presenters.AuthPresenter
+import com.tzeentch.teacherhelper.utils.AuthUiState
 import org.koin.compose.koinInject
 
 @Composable
@@ -42,32 +44,51 @@ fun LoginScreen(
     var passwordValue by rememberSaveable { mutableStateOf("") }
     var confirmPassValue by rememberSaveable { mutableStateOf("") }
     var isLogin by rememberSaveable { mutableStateOf(true) }
-
-    LoginScreen(
-        iPValue = iPValue,
-        emailValue = emailValue,
-        passwordValue = passwordValue,
-        confirmPassValue = confirmPassValue,
-        isLogin = isLogin,
-        onIPValueChange = { newIPValue ->
-            iPValue = newIPValue
-        },
-        onEmailValueChange = { newEmail ->
-            emailValue = newEmail
-        },
-        onPasswordValueChange = { newPassword ->
-            passwordValue = newPassword
-        },
-        onConfirmationPasswordValueChange = { newConfirmPassword ->
-            confirmPassValue = newConfirmPassword
-        },
-        onLoginClick = {
-
-        },
-        onRegistrationClick = {
-            isLogin = !isLogin
+    when (presenter.authState.collectAsState().value) {
+        AuthUiState.Init -> {
+            LoginScreen(
+                iPValue = iPValue,
+                emailValue = emailValue,
+                passwordValue = passwordValue,
+                confirmPassValue = confirmPassValue,
+                isLogin = isLogin,
+                onIPValueChange = { newIPValue ->
+                    iPValue = newIPValue
+                },
+                onEmailValueChange = { newEmail ->
+                    emailValue = newEmail
+                },
+                onPasswordValueChange = { newPassword ->
+                    passwordValue = newPassword
+                },
+                onConfirmationPasswordValueChange = { newConfirmPassword ->
+                    confirmPassValue = newConfirmPassword
+                },
+                onLoginClick = {
+                    presenter.loginUser(ip = iPValue, name = emailValue, password = passwordValue)
+                },
+                onRegistrationClick = {
+                    if (isLogin) {
+                        isLogin = false
+                    } else {
+                        presenter.registerUser(
+                            ip = iPValue,
+                            name = emailValue,
+                            password = passwordValue
+                        )
+                    }
+                }
+            )
         }
-    )
+
+        AuthUiState.ToOptionalScreen -> {
+            navController.navigate(MainSection.OPTION_ROUTE)
+        }
+
+        else -> {
+
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -166,7 +187,8 @@ private fun LoginScreen(
                                 id = if (isLogin)
                                     R.string.login_password_placeholder
                                 else
-                                    R.string.registration_password_placeholder),
+                                    R.string.registration_password_placeholder
+                            ),
                             color = Color.LightGray
                         )
                     },
@@ -225,7 +247,7 @@ private fun LoginScreen(
                     ) {
                         Text(
                             modifier = Modifier.padding(horizontal = 8.dp),
-                            text = stringResource(id = if(isLogin) R.string.login_registration_button_text else R.string.login_register_button_text),
+                            text = stringResource(id = if (isLogin) R.string.login_registration_button_text else R.string.login_register_button_text),
                             color = Color.White,
                             fontWeight = FontWeight.W500,
                             fontSize = 18.sp

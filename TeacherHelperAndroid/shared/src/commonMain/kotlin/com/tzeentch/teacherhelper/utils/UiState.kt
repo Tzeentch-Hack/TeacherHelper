@@ -1,12 +1,12 @@
 package com.tzeentch.teacherhelper.utils
 
-sealed class LoginUiState {
-    object Login : LoginUiState()
+sealed class AuthUiState {
 
-    object Loading : LoginUiState()
+    object Init : AuthUiState()
 
-    data class ReceiveToken(val token: String) :
-        LoginUiState()
+    object Loading : AuthUiState()
+    
+    object ToOptionalScreen : AuthUiState()
 }
 
 sealed class MainUiState {
