@@ -17,8 +17,16 @@ def get_request_count():
 
 def get_processed_request(request_id) -> models.ProcessedRequest:
     request_item = db.query(RequestItem).filter_by(request_id=request_id).first()
-    value = models.ProcessedRequest(request_id=request_item.request_id, username=request_item.username,
-                                    status=request_item.status)
+    value = models.ProcessedRequest(request_id=request_item.request_id,
+                                    username=request_item.username,
+                                    status=request_item.status,
+                                    task_id=request_item.task_id,
+                                    images_url=request_item.images_url,
+                                    pptx_url=request_item.pptx_url,
+                                    short_text=request_item.short_text,
+                                    lesson_estimates=request_item.lesson_estimates,
+                                    teaching_recommendations=request_item.teaching_recommendations
+                                    )
     return value
 
 
@@ -71,7 +79,13 @@ def delete_processed_request_by_id(request_id: str):
 def add_processed_request(value: models.ProcessedRequest):
     obj = RequestItem()
     obj.request_id = value.request_id
+    obj.task_id = value.task_id
     obj.status = value.status
     obj.username = value.username
+    obj.images_url = value.images_url
+    obj.pptx_url = value.pptx_url
+    obj.short_text = value.short_text
+    obj.lesson_estimates = value.lesson_estimates
+    obj.teaching_recommendations = value.teaching_recommendations
     db.add(obj)
     db.commit()
