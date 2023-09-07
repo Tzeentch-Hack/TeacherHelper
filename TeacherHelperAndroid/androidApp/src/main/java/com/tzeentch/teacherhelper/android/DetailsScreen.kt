@@ -16,6 +16,7 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,7 +36,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import com.tzeentch.teacherhelper.dto.DetailsDto
 import com.tzeentch.teacherhelper.presenters.DetailsPresenter
+import com.tzeentch.teacherhelper.utils.DetailsUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -43,14 +46,32 @@ import org.koin.compose.koinInject
 @Composable
 fun DetailsScreen(
     navController: NavController,
-    presenter: DetailsPresenter = koinInject()
+    presenter: DetailsPresenter = koinInject(),
+    requestId: String
 ) {
-    DetailsScreen()
+    presenter.getRequests(id = "")
+    when(val result = presenter.detailsState.collectAsState().value) {
+        is DetailsUiState.ReceiveTask -> {
+            DetailsScreen(
+                requestId = requestId,
+                detailsDto = result.detailsDto
+            )
+        }
+        is DetailsUiState.Loading -> {
+            RotatingProgressBar()
+        }
+        else -> {
+
+        }
+    }
 }
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
-private fun DetailsScreen() {
+private fun DetailsScreen(
+    requestId: String,
+    detailsDto: DetailsDto
+) {
 
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -105,17 +126,13 @@ private fun DetailsScreen() {
             }
         }
     ) { innerPadding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
-//            TabPicker(
-//                tabs = listOfDetailsTabs,
-//                pagerState = pagerState,
-//                coroutineScope = coroutineScope
-//            )
             DetailsTabContent(tabs = listOfDetailsTabs, pagerState = pagerState)
         }
     }
@@ -162,10 +179,4 @@ private fun DetailsTabContent(
     HorizontalPager(count = tabs.size, state = pagerState) { page ->
         tabs[page].screen()
     }
-}
-
-@Preview
-@Composable
-fun DetailsScreenPreview() {
-    DetailsScreen()
 }

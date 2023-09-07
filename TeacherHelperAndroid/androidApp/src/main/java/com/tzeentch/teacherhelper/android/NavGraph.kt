@@ -63,8 +63,9 @@ fun NavGraph(
         composable(route = MainSections.CameraSection.destination) {
             CameraScreen(navController = navController)
         }
-        composable(route = MainSections.DetailsSection.destination) {
-            DetailsScreen(navController = navController)
+        composable(route = MainSections.DetailsSection.destination) { backStackArgument ->
+            val requestId = backStackArgument.arguments?.getString(REQUEST_ID_KEY) ?: ""
+            DetailsScreen(navController = navController, requestId = requestId)
         }
     }
 }

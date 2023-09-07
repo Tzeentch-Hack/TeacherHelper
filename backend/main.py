@@ -72,12 +72,13 @@ def delete_request(current_user: Annotated[models.User, Depends(authorization.ge
     return response_body
 
 
-@app.get("/get_request", tags=["Help generation"])
+@app.get("/get_request", response_model=models.ProcessedRequest, tags=["Help generation"])
 def check_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
                   request_id: str):
     pr = requestManagement.get_processed_request(request_id)
     response_body = {"request_id": pr.request_id}
     return response_body
+
 
 
 if __name__ == "__main__":
