@@ -39,7 +39,7 @@ class DetailsPresenter constructor(
 
     fun getRequests(id: String) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            repository.getRequests(token = token, id = id).collect { result ->
+            repository.getRequests(token = token, id = id,ip).collect { result ->
                 result.isLoading {
                     _detailsState.value = DetailsUiState.Loading
                 }.onSuccess {

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,8 +29,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -103,83 +106,132 @@ private fun OptionScreen(
         },
         containerColor = Color(0xFF5B7065)
     ) { innerPadding ->
-        val timer = remember {
-            mutableFloatStateOf(5000f)
-        }
-        when (val result = presenter.mainState.collectAsState().value) {
-            is MainUiState.ReceiveListOfTask -> {
-                LaunchedEffect(key1 = result.requestList) {
-                    var needTimerTask = false
-                    result.requestList.forEach {
-                        if (it.status == "process")
-                            needTimerTask = true
-                    }
-                    if (needTimerTask) {
-                        while (timer.floatValue > 0) {
-                            delay(1000)
-                            timer.floatValue -= 1000
-                        }
-                        presenter.updateAllJobs()
-                    }
-                }
-                LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(result.requestList.size) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clickable {
-                                    if (result.requestList[it].status == "ready") onCardClicked(
-                                        result.requestList[it].id
-                                    )
-                                },
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color(0xFF304040)
-                            )
-                        ) {
-                            Text(
-                                text = result.requestList[it].status,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.W400,
-                                color = Color(0xFFC9D1C8)
-                            )
-                        }
-                    }
-                }
-            }
-
-            is MainUiState.Error -> {
-                //onErrorAction()
-            }
-
-            is MainUiState.Loading -> {
-                RotatingProgressBar()
-            }
-        }
         Box(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.TopCenter
         ) {
-            Button(
+
+            Box(
                 modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .size(50.dp),
-                onClick = { onScanButtonClicked() },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF304040)
-                ),
-                shape = CircleShape
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.baseline_event_note_24),
-                    contentDescription = stringResource(
-                        id = R.string.image_description
+                Button(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .size(70.dp),
+                    onClick = { onScanButtonClicked() },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF304040)
+                    ),
+                    shape = CircleShape
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_event_note_24),
+                        contentDescription = stringResource(
+                            id = R.string.image_description
+                        )
                     )
-                )
+                }
+            }
+            when (val result = presenter.mainState.collectAsState().value) {
+                is MainUiState.ReceiveListOfTask -> {
+                    val timer = remember {
+                        mutableFloatStateOf(result.timer)
+                    }
+                    LaunchedEffect(key1 = result.requestList) {
+                        var needTimerTask = false
+                        result.requestList.forEach {
+                            if (it.status == "process")
+                                needTimerTask = true
+                        }
+                        if (needTimerTask) {
+                            while (timer.floatValue > 0) {
+                                delay(1000)
+                                timer.floatValue -= 1000
+                            }
+                            presenter.updateAllJobs()
+                        }
+                    }
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
+                    ) {
+                        items(result.requestList.size) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .clickable {
+                                        onCardClicked(
+                                            result.requestList[it].id
+                                        )
+                                    },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFF304040)
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    TypewriterText(texts = listOf(result.requestList[it].status))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                is MainUiState.Error -> {
+                    //onErrorAction()
+                }
+
+                is MainUiState.Loading -> {
+                    RotatingProgressBar()
+                }
             }
         }
     }
+}
+
+@Composable
+fun TypewriterText(
+    texts: List<String>,
+) {
+    var textIndex by remember {
+        mutableIntStateOf(0)
+    }
+    var textToDisplay by remember {
+        mutableStateOf("")
+    }
+
+    LaunchedEffect(
+        key1 = texts,
+    ) {
+        while (textIndex < texts.size) {
+            texts[textIndex].forEachIndexed { charIndex, _ ->
+                textToDisplay = texts[textIndex]
+                    .substring(
+                        startIndex = 0,
+                        endIndex = charIndex + 1,
+                    )
+                delay(160)
+            }
+            textIndex = (textIndex + 1) % texts.size
+            delay(1000)
+        }
+    }
+
+    Text(
+        text = textToDisplay,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.W400,
+        color = Color(0xFFC9D1C8)
+    )
 }
 
 @Preview

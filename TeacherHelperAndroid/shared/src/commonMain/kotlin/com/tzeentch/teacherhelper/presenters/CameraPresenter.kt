@@ -35,10 +35,10 @@ class CameraPresenter constructor(
                 repository.sendPhoto(ip = user.ip, token = user.token, files).collect { result ->
                     result.onFailure {
                         _cameraState.value = CameraUiState.GotoOptionalScreen
-                    }.onSuccess {
-                        _cameraState.value = CameraUiState.GotoOptionalScreen
                     }.isLoading {
                         _cameraState.value = CameraUiState.Loading
+                    }.onSuccess {
+                        _cameraState.value = CameraUiState.GotoOptionalScreen
                     }
                 }
             }

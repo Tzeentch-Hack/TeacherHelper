@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RequestDto(
-    @SerialName("requests_id") val id: String,
+    @SerialName("request_id") val id: String,
     @SerialName("status") val status: String
 )
