@@ -1,5 +1,6 @@
 package com.tzeentch.teacherhelper.android
 
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,19 +25,19 @@ sealed class DetailsTabItems(
     val title: String
 ) {
     class DetailsTab1(override val screen: @Composable () -> Unit) :
-        DetailsTabItems({}, title = "Derails Tab 1")
+        DetailsTabItems({}, title = "Slides")
 
     class DetailsTab2(override val screen: @Composable () -> Unit) :
-        DetailsTabItems({}, title = "Derails Tab 2")
+        DetailsTabItems({}, title = "Summary")
 
     class DetailsTab3(override val screen: @Composable () -> Unit) :
-        DetailsTabItems({}, title = "Derails Tab 3")
+        DetailsTabItems({}, title = "Recommendations")
 
     class DetailsTab4(override val screen: @Composable () -> Unit) :
-        DetailsTabItems({}, title = "Derails Tab 4")
+        DetailsTabItems({}, title = "Estimations")
 
     class DetailsTab5(override val screen: @Composable () -> Unit) :
-        DetailsTabItems({}, title = "Derails Tab 5")
+        DetailsTabItems({}, title = "Questions")
 }
 
 @Composable

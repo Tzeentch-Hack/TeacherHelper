@@ -22,4 +22,10 @@
 
     // Details Screen
     <string name="details_screen_title">Details</string>
+    
+    // Camera Screen
+    <string name="clear">Clear</string>
+    <string name="back">Back</string>
+    <string name="send">Send</string>
+    <string name="take_a_picture">Take a picture</string>
 </resources>

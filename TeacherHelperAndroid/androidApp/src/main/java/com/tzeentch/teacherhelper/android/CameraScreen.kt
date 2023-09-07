@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,11 +29,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.tzeentch.teacherhelper.android.utils.Helper.convertUriToFile
 import com.tzeentch.teacherhelper.android.utils.getCameraProvider
 import com.tzeentch.teacherhelper.presenters.CameraPresenter
@@ -110,41 +120,100 @@ fun CameraScreen(navController: NavController, presenter: CameraPresenter = koin
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
                         .align(Alignment.BottomCenter),
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Button(onClick = { navController.popBackStack() }) {
-                        Text(text = "Back")
-                    }
                     Column {
-                        Button(onClick = {
-                            imageCapture.takePicture(
-                                options,
-                                ContextCompat.getMainExecutor(context),
-                                object : ImageCapture.OnImageSavedCallback {
-                                    override fun onError(exc: ImageCaptureException) {
-                                        Log.e("err", "Photo capture failed: ${exc.message}", exc)
-                                    }
+                        Button(
+                            onClick = { presenter.sendPhoto(files) },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFF304040)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                text = stringResource(id = R.string.back),
+                                color = Color(0xFFC9D1C8),
+                                fontWeight = FontWeight.W500,
+                                fontSize = 18.sp
+                            )
+                        }
+                        Button(
+                            onClick = { },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFF304040)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                text = stringResource(id = R.string.clear),
+                                color = Color(0xFFC9D1C8),
+                                fontWeight = FontWeight.W500,
+                                fontSize = 18.sp
+                            )
+                        }
+                    }
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Button(
+                            onClick = { presenter.sendPhoto(files) },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFF304040)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                text = stringResource(id = R.string.send),
+                                color = Color(0xFFC9D1C8),
+                                fontWeight = FontWeight.W500,
+                                fontSize = 18.sp
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                imageCapture.takePicture(
+                                    options,
+                                    ContextCompat.getMainExecutor(context),
+                                    object : ImageCapture.OnImageSavedCallback {
+                                        override fun onError(exc: ImageCaptureException) {
+                                            Log.e(
+                                                "err",
+                                                "Photo capture failed: ${exc.message}",
+                                                exc
+                                            )
+                                        }
 
-                                    override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                                        output.savedUri?.let { uri ->
-                                            convertUriToFile(
-                                                uri,
-                                                context
-                                            )?.readBytes()?.let { files.add(it) }
+                                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                                            output.savedUri?.let { uri ->
+                                                convertUriToFile(
+                                                    uri,
+                                                    context
+                                                )?.readBytes()?.let { files.add(it) }
+                                            }
                                         }
                                     }
-                                })
-                        })
-                        {
-                            Text("Take Photo")
+                                )
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color(0xFF304040)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                text = stringResource(id = R.string.take_a_picture),
+                                color = Color(0xFFC9D1C8),
+                                fontWeight = FontWeight.W500,
+                                fontSize = 18.sp
+                            )
                         }
-                        Button(onClick = { presenter.sendPhoto(files) }) {
-                            Text(text = "Send")
-                        }
-                    }
-                    Button(onClick = { }) {
-                        Text(text = "clear")
                     }
                 }
             }
@@ -161,3 +230,10 @@ fun CameraScreen(navController: NavController, presenter: CameraPresenter = koin
 
 }
 
+@Preview
+@Composable
+fun CameraScreenPreview() {
+    CameraScreen(
+        navController = rememberNavController()
+    )
+}

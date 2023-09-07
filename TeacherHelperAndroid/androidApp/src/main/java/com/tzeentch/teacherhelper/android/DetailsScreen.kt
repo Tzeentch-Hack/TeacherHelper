@@ -1,6 +1,5 @@
 package com.tzeentch.teacherhelper.android
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -15,18 +15,17 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,7 +35,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
-import com.tzeentch.teacherhelper.dto.DetailsDto
 import com.tzeentch.teacherhelper.presenters.DetailsPresenter
 import com.tzeentch.teacherhelper.utils.DetailsUiState
 import kotlinx.coroutines.CoroutineScope
@@ -49,17 +47,21 @@ fun DetailsScreen(
     presenter: DetailsPresenter = koinInject(),
     requestId: String
 ) {
-    presenter.getRequests(id = "")
-    when(val result = presenter.detailsState.collectAsState().value) {
+    LaunchedEffect(key1 = Unit) { presenter.getRequests(id = requestId) }
+
+    DetailsScreen(
+        requestId = requestId,
+//        detailsDto = result.detailsDto
+    )
+
+    when (val result = presenter.detailsState.collectAsState().value) {
         is DetailsUiState.ReceiveTask -> {
-            DetailsScreen(
-                requestId = requestId,
-                detailsDto = result.detailsDto
-            )
         }
+
         is DetailsUiState.Loading -> {
             RotatingProgressBar()
         }
+
         else -> {
 
         }
@@ -70,7 +72,7 @@ fun DetailsScreen(
 @Composable
 private fun DetailsScreen(
     requestId: String,
-    detailsDto: DetailsDto
+//    detailsDto: DetailsDto
 ) {
 
     val pagerState = rememberPagerState()
@@ -78,19 +80,19 @@ private fun DetailsScreen(
 
     val listOfDetailsTabs = listOf(
         DetailsTabItems.DetailsTab1 {
-            DetailsTab1()
+            SlidesTab()
         },
         DetailsTabItems.DetailsTab2 {
-            DetailsTab2()
+            SummaryTab()
         },
         DetailsTabItems.DetailsTab3 {
-            DetailsTab3()
+            RecommendationsTab()
         },
         DetailsTabItems.DetailsTab4 {
-            DetailsTab4()
+            EstimationTab()
         },
         DetailsTabItems.DetailsTab5 {
-            DetailsTab5()
+            QuestionsTab()
         }
     )
 
@@ -111,12 +113,16 @@ private fun DetailsScreen(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = stringResource(id = R.string.login_title),
+                                text = stringResource(id = R.string.details_screen_title),
                                 fontSize = 24.sp,
-                                fontWeight = FontWeight.W600
+                                fontWeight = FontWeight.W600,
+                                color = Color(0xFFC9D1C8)
                             )
                         }
                     },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFF304040)
+                    )
                 )
                 TabPicker(
                     tabs = listOfDetailsTabs,
@@ -147,23 +153,31 @@ private fun TabPicker(
 
 ) {
 
-    TabRow(
+    ScrollableTabRow(
+        edgePadding = 0.dp,
         selectedTabIndex = pagerState.currentPage,
-        backgroundColor = Color.White,
+        backgroundColor = Color(0xFF304040),
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
                 height = 2.dp,
-                color = Color.Black
+                color = Color(0xFFC9D1C8)
             )
-        }
+        },
     ) {
         tabs.forEachIndexed { index, detailsTabItems ->
             Tab(
-                text = { Text(text = detailsTabItems.title) },
+                text = {
+                    Text(
+                        text = detailsTabItems.title,
+                        color = Color(0xFFC9D1C8),
+                        fontWeight = FontWeight.W400,
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp
+                    )
+                },
                 selected = pagerState.currentPage == index,
                 onClick = {
-                    Log.e("TAG", "TabPicker: CLICKED!")
                     coroutineScope.launch { pagerState.animateScrollToPage(index) }
                 }
             )
