@@ -6,17 +6,20 @@ from fastapi.security import OAuth2PasswordBearer
 
 import uvicorn
 
+import models
+import database
 import authorization
 import image_manager
-import database
-import models
+import requestManagement
+
 
 app = FastAPI()
 app.include_router(authorization.router)
 
 
 def get_request_id():
-    return (str(0)).zfill(6)
+    current_request_count = requestManagement.get_request_count()
+    return (str(current_request_count)).zfill(6)
 
 
 @app.get("/", tags=["Help generation"])
@@ -38,13 +41,36 @@ def create_request(current_user: Annotated[models.User, Depends(authorization.ge
         finally:
             file.file.close()
     request_id = get_request_id()
+    requestManagement.add_processed_request(models.ProcessedRequest(status="process", request_id=request_id,
+                                            username=current_user.username))
     image_manager.set_images_to_user(current_user.username, request_id, image_datas)
+    # logica
+    # ot Igorya
+    requestManagement.increment_request_count()
     return {"request_id": request_id}
 
 
+@app.get("/is_request_exist", tags=["Debug functions"])
+def delete_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
+                   request_id: str):
+    pr = requestManagement.exist_in_processed_requests(request_id)
+    response_body = {pr}
+    return response_body
+
+
+@app.get("/delete_request", tags=["Debug functions"])
+def delete_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
+                  request_id: str):
+    pr = requestManagement.delete_processed_request_by_id(request_id)
+    response_body = {"request_id": request_id}
+    return response_body
+
+
 @app.get("/check_request", tags=["Help generation"])
-def check_request(request_id: int):
-    response_body = {"content": 0}
+def check_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
+                  request_id: str):
+    pr = requestManagement.get_processed_request(request_id)
+    response_body = {"request_id": pr.request_id}
     return response_body
 
 

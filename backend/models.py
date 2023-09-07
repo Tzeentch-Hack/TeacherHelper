@@ -1,6 +1,12 @@
 from pydantic import BaseModel
 
 
+class ProcessedRequest(BaseModel):
+    username: str
+    request_id: str
+    status: str
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
