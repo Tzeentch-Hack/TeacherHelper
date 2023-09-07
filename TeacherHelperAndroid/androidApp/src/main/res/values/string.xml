@@ -19,4 +19,7 @@
     <string name="registration_confirmation_password_placeholder">Please confirm your password</string>
     <string name="registration_email_placeholder">Create your username</string>
     <string name="registration_password_placeholder">Create your password</string>
+
+    // Details Screen
+    <string name="details_screen_title">Details</string>
 </resources>
