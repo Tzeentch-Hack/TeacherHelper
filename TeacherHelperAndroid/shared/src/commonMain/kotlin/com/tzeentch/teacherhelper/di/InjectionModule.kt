@@ -3,7 +3,6 @@ package com.tzeentch.teacherhelper.di
 import com.tzeentch.teacherhelper.presenters.AuthPresenter
 import com.tzeentch.teacherhelper.presenters.CameraPresenter
 import com.tzeentch.teacherhelper.presenters.DetailsPresenter
-import com.tzeentch.teacherhelper.presenters.LoginPresenter
 import com.tzeentch.teacherhelper.repository.AuthRepository
 import com.tzeentch.teacherhelper.repository.AuthRepositoryImpl
 import com.tzeentch.teacherhelper.presenters.MainPresenter
@@ -13,8 +12,6 @@ import com.tzeentch.teacherhelper.repository.DbRepository
 import com.tzeentch.teacherhelper.repository.DbRepositoryImpl
 import com.tzeentch.teacherhelper.repository.DetailsRepository
 import com.tzeentch.teacherhelper.repository.DetailsRepositoryImpl
-import com.tzeentch.teacherhelper.repository.LoginRepository
-import com.tzeentch.teacherhelper.repository.LoginRepositoryImpl
 import com.tzeentch.teacherhelper.repository.MainRepository
 import com.tzeentch.teacherhelper.repository.MainRepositoryImpl
 import io.github.aakira.napier.DebugAntilog
@@ -78,9 +75,6 @@ fun injectionModule(enableNetworkLogs: Boolean = false) = module {
 
     single<CameraRepository> { CameraRepositoryImpl(httpClient = get()) }
     factoryOf(::CameraPresenter)
-
-    single<LoginRepository> { LoginRepositoryImpl(httpClient = get()) }
-    factoryOf(::LoginPresenter)
 
     single<DetailsRepository> { DetailsRepositoryImpl(httpClient = get()) }
     factoryOf(::DetailsPresenter)

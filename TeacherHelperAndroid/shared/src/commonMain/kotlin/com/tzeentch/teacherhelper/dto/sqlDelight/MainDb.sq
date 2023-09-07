@@ -1,11 +1,12 @@
 CREATE TABLE MainDb (
     name TEXT DEFAULT "",
     password TEXT DEFAULT "",
-    token TEXT DEFAULT ""
+    token TEXT DEFAULT "",
+    ip TEXT DEFAULT ""
 );
 
 newUser:
-REPLACE INTO MainDb(name, password,token)VALUES(?,?,?);
+REPLACE INTO MainDb(name, password,token,ip)VALUES(?,?,?,?);
 
 
 updateToken:

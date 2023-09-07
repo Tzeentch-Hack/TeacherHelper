@@ -1,11 +1,12 @@
 package com.tzeentch.teacherhelper.repository
 
 import com.tzeentch.teacherhelper.di.MainDbDriverFactory
+import com.tzeentch.teacherhelper.dto.UserData
 
 interface DbRepository {
-    fun newUser(name: String, password: String, token: String)
+    fun newUser(name: String, password: String, token: String,ip:String)
     fun updateToken(token: String)
-    fun getUser(): Triple<String?, String?, String?>
+    fun getUser(): UserData
 }
 
 class DbRepositoryImpl constructor(mainDbDriverFactory: MainDbDriverFactory) : DbRepository {
@@ -17,9 +18,9 @@ class DbRepositoryImpl constructor(mainDbDriverFactory: MainDbDriverFactory) : D
         )
     private val dbQuery = mainDatabase.mainDbQueries
 
-    override fun newUser(name: String, password: String, token: String) {
+    override fun newUser(name: String, password: String, token: String,ip:String) {
         dbQuery.transaction {
-            dbQuery.newUser(name, password, token)
+            dbQuery.newUser(name, password, token,ip)
         }
     }
 
@@ -29,9 +30,9 @@ class DbRepositoryImpl constructor(mainDbDriverFactory: MainDbDriverFactory) : D
         }
     }
 
-    override fun getUser(): Triple<String?, String?, String?> {
+    override fun getUser(): UserData {
         val currentUser = dbQuery.getUser().executeAsOne()
-        return Triple(currentUser.name, currentUser.password, currentUser.token)
+        return UserData(currentUser.name, currentUser.password, currentUser.token,currentUser.ip)
     }
 
 }
