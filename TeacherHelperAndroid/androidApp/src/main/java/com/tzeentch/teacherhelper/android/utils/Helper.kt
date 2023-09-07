@@ -9,6 +9,8 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import androidx.exifinterface.media.ExifInterface
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import kotlin.math.roundToInt
@@ -107,5 +109,24 @@ object Helper {
             err.printStackTrace()
         }
         return bitmap
+    }
+
+    fun convertBitmapToFile(imageBitmap: Bitmap, context: Context): File? {
+        val f = File(context.cacheDir, "file.jpg")
+        return try {
+            val os = FileOutputStream(f);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os)
+            os.flush()
+            os.close()
+            f
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun convertUriToFile(uri: Uri?, context: Context): File? {
+        val bitmap = uri?.let { convertUriToBitmap(it, context) }
+        return bitmap?.let { convertBitmapToFile(it, context) }
     }
 }

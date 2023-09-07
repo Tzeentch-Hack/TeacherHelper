@@ -5,7 +5,7 @@ sealed class AuthUiState {
     object Init : AuthUiState()
 
     object Loading : AuthUiState()
-    
+
     object ToOptionalScreen : AuthUiState()
 }
 
@@ -23,5 +23,14 @@ sealed class DetailsUiState {
     data class ReceiveTask(val smt: String) : DetailsUiState()
 
     data class Error(val error: String) : DetailsUiState()
+}
+
+sealed class CameraUiState {
+    object Initial : CameraUiState()
+
+    object GotoOptionalScreen : CameraUiState()
+
+    object Loading : CameraUiState()
+
 }
 

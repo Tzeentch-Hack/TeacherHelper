@@ -31,7 +31,7 @@ class AuthPresenter constructor(
         if (user.name.isNullOrEmpty() || user.password.isNullOrEmpty() || user.ip.isNullOrEmpty()) {
             _authState.value = AuthUiState.Init
         } else {
-            loginUser(user.name, user.password, user.ip)
+            loginUser(user.ip, user.name, user.password)
         }
     }
 
@@ -52,9 +52,9 @@ class AuthPresenter constructor(
 
     fun registerUser(ip: String, name: String, password: String) {
         viewModelScope.launch(coroutineExceptionHandler) {
-            authRepository.loginUser(ip, name, password).collect { result ->
+            authRepository.registerUser(ip, name, password).collect { result ->
                 result.isLoading {
-
+                    _authState.value = AuthUiState.Loading
                 }.onSuccess { res ->
                     dbRepository.newUser(name, password, res.token, ip)
                     _authState.value = AuthUiState.ToOptionalScreen

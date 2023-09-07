@@ -18,13 +18,16 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.addDefaultResponseValidation
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.factoryOf
@@ -35,12 +38,16 @@ fun injectionModule(enableNetworkLogs: Boolean = false) = module {
     single {
         HttpClient(engineFactory = CIO) {
             expectSuccess = true
+            install(HttpTimeout) {
+                requestTimeoutMillis = 1000000
+            }
             addDefaultResponseValidation()
 
             defaultRequest {
                 url {
                     protocol = URLProtocol.HTTP
                 }
+                contentType(ContentType.Application.Json.withParameter("charset", "utf-8"))
             }
 
             if (enableNetworkLogs) {
