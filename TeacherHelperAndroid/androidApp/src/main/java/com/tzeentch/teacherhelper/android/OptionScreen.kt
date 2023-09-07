@@ -1,5 +1,8 @@
 package com.tzeentch.teacherhelper.android
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,9 +48,14 @@ import org.koin.compose.koinInject
 fun OptionScreen(
     navController: NavController
 ) {
-
+    val cameraPermission =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                navController.navigate(MainSections.CameraSection.destination)
+            }
+        }
     OptionScreen(
-        onScanButtonClicked = { navController.navigate(MainSections.CameraSection.destination) },
+        onScanButtonClicked = { cameraPermission.launch(Manifest.permission.CAMERA) },
         onCardClicked = {},
         onErrorAction = { navController.navigate(AuthenticationSections.LoginSection.destination) }
     )
