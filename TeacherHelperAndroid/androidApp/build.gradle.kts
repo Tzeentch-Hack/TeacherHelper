@@ -52,7 +52,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("io.insert-koin:koin-android:3.4.0")
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
-    implementation("cz.adaptech.tesseract4android:tesseract4android-openmp:4.5.0")
     implementation("androidx.camera:camera-camera2:1.3.0-rc01")
     implementation("androidx.camera:camera-lifecycle:1.3.0-rc01")
     implementation("androidx.camera:camera-view:1.3.0-rc01")

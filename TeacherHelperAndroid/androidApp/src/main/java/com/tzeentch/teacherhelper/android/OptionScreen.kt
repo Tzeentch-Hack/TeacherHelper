@@ -1,6 +1,7 @@
 package com.tzeentch.teacherhelper.android
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -8,14 +9,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.tzeentch.teacherhelper.presenters.MainPresenter
+import com.tzeentch.teacherhelper.utils.MainUiState
+import org.koin.compose.koinInject
 
 
 @Composable
@@ -33,14 +40,19 @@ fun OptionScreen(
 ) {
 
     OptionScreen(
-        onScanButtonClicked = { navController.navigate(MainSections.CameraSection.destination) }
+        onScanButtonClicked = { navController.navigate(MainSections.CameraSection.destination) },
+        onCardClicked = {},
+        onErrorAction = { navController.navigate(AuthenticationSections.LoginSection.destination) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OptionScreen(
-    onScanButtonClicked: () -> Unit
+    onScanButtonClicked: () -> Unit,
+    onCardClicked: (id: String) -> Unit,
+    onErrorAction: () -> Unit,
+    presenter: MainPresenter = koinInject()
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -63,6 +75,27 @@ private fun OptionScreen(
             )
         }
     ) { innerPadding ->
+        when (val result = presenter.mainState.collectAsState().value) {
+            is MainUiState.ReceiveListOfTask -> {
+                LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                    items(result.requestList.size) {
+                        Card(modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { onCardClicked(result.requestList[it].id) }) {
+                            Text(text = result.requestList[it].status)
+                        }
+                    }
+                }
+            }
+
+            is MainUiState.Error -> {
+                onErrorAction()
+            }
+
+            is MainUiState.Loading -> {
+                RotatingProgressBar()
+            }
+        }
         Box(
             modifier = Modifier
                 .padding(innerPadding)

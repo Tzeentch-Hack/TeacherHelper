@@ -22,7 +22,7 @@ class CameraPresenter constructor(
 ) : KoinComponent {
     private val viewModelScope = CoroutineScope(Dispatchers.Default)
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
-
+        _cameraState.value = CameraUiState.GotoOptionalScreen
     }
 
     private val _cameraState = MutableStateFlow<CameraUiState>(CameraUiState.Initial)
@@ -34,7 +34,7 @@ class CameraPresenter constructor(
             if (user.ip != null && user.token != null) {
                 repository.sendPhoto(ip = user.ip, token = user.token, files).collect { result ->
                     result.onFailure {
-
+                        _cameraState.value = CameraUiState.GotoOptionalScreen
                     }.onSuccess {
                         _cameraState.value = CameraUiState.GotoOptionalScreen
                     }.isLoading {
