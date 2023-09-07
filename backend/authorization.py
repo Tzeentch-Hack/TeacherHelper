@@ -17,23 +17,6 @@ SECRET_KEY = "DanilBorisAlexanderIgorDanilBorisAlexanderIgorDanilBorisAlexande"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "fakehashedsecret",
-        "disabled": False,
-    },
-    "alice": {
-        "username": "alice",
-        "full_name": "Alice Wonderson",
-        "email": "alice@example.com",
-        "hashed_password": "fakehashedsecret2",
-        "disabled": True,
-    },
-}
-
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -50,7 +33,7 @@ def get_user(username: str):
     return models.UserInDB(username=user_from_sql.username, hashed_password=user_from_sql.hashed_password)
 
 
-def username_exist(db, username: str):
+def username_exist(username: str):
     if database.db.query(database.UserInDBSQL).filter(database.UserInDBSQL.username == username).first():
         return True
     else:
@@ -141,7 +124,7 @@ def read_users_me(
 @router.post("/registration", response_model=models.Token, tags=["User management"])
 def register_new_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     new_username = form_data.username
-    if username_exist(database.db, new_username):
+    if username_exist(new_username):
         raise HTTPException(status_code=409, detail="User already exist")
     new_password_hash = get_password_hash(form_data.password)
     new_user = database.UserInDBSQL(username=new_username, hashed_password=new_password_hash)
