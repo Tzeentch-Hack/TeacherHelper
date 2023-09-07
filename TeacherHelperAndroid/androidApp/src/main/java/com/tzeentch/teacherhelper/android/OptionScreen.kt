@@ -113,7 +113,11 @@ private fun OptionScreen(
                     items(result.requestList.size) {
                         Card(modifier = Modifier
                             .fillMaxSize()
-                            .clickable { onCardClicked(result.requestList[it].id) }) {
+                            .clickable {
+                                if (result.requestList[it].status == "ready") onCardClicked(
+                                    result.requestList[it].id
+                                )
+                            }) {
                             Text(text = result.requestList[it].status)
                         }
                     }
