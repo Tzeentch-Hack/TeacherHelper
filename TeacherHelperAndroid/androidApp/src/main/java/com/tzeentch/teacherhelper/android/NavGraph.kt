@@ -9,6 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
+
+sealed class AuthenticationSections(val destination: String) {
+    object LoginSection : AuthenticationSections(AuthenticationSection.LOGIN_ROUTE)
+    object RegistrationSection : AuthenticationSections(AuthenticationSection.REGISTRATION_ROUTE)
+}
+
 sealed class MainSections(val destination: String) {
     object OptionSection : MainSections(MainSection.OPTION_ROUTE)
     object CameraSection : MainSections(MainSection.CAMERA_ROUTE)
@@ -17,7 +23,7 @@ sealed class MainSections(val destination: String) {
 @Composable
 fun NavGraph(
     modifier: Modifier,
-    startDestination: String = MainSections.CameraSection.destination
+    startDestination: String = AuthenticationSections.LoginSection.destination
 ) {
     val navController = rememberNavController()
     NavHost(
@@ -29,6 +35,9 @@ fun NavGraph(
         popEnterTransition = { fadeIn(tween(300)) },
         popExitTransition = { fadeOut(tween(300)) }
     ) {
+        composable(route = AuthenticationSections.LoginSection.destination) {
+            LoginScreen(navController = navController)
+        }
         composable(route = MainSections.OptionSection.destination) {
             OptionScreen(navController = navController)
         }

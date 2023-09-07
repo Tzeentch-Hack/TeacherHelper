@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TeacherHelper</string>
-    <string name="main_screen_title">Teacher Helper</string>
     <string name="image_description">imageDescription</string>
+
+    // Option Screen
+    <string name="option_screen_title">Teacher Helper</string>
+
+    // Login Screen
+    <string name="login_title">Login</string>
+    <string name="login_authentication_ip_title">IP connection</string>
+    <string name="login_authentication_ip_placeholder">192.168.0.0:8000</string>
+    <string name="login_email_placeholder">Enter your username</string>
+    <string name="login_password_title">Password</string>
+    <string name="login_password_placeholder">Enter your password</string>
+    <string name="login_registration_button_text">Registration</string>
+    <string name="login_register_button_text">Register</string>
+    <string name="registration_confirmation_password_title">Password Confirmation</string>
+    <string name="registration_confirmation_password_placeholder">Please confirm your password</string>
+    <string name="registration_email_placeholder">Create your username</string>
+    <string name="registration_password_placeholder">Create your password</string>
 </resources>
