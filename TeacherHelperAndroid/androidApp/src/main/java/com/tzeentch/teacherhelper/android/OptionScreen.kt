@@ -164,6 +164,7 @@ private fun OptionScreen(
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(top = 4.dp, bottom = 8.dp)
                                     .height(50.dp)
                                     .clickable {
                                         onCardClicked(
@@ -179,7 +180,16 @@ private fun OptionScreen(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    TypewriterText(texts = listOf(result.requestList[it].status))
+                                    if (result.requestList[it].status != "ready") {
+                                        TypewriterText(texts = listOf(result.requestList[it].status))
+                                    } else {
+                                        Text(
+                                            text = result.requestList[it].status,
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.W400,
+                                            color = Color(0xFFC9D1C8)
+                                        )
+                                    }
                                 }
                             }
                         }
