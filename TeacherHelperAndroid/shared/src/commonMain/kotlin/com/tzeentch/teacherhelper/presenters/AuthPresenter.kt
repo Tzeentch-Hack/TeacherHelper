@@ -41,7 +41,7 @@ class AuthPresenter constructor(
                 result.isLoading {
                     _authState.value = AuthUiState.Loading
                 }.onSuccess { res ->
-                    dbRepository.updateToken(res.token)
+                    dbRepository.newUser(name, password, res.token, ip)
                     _authState.value = AuthUiState.ToOptionalScreen
                 }.onFailure { error ->
                     _authState.value = AuthUiState.Init

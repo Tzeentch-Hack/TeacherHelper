@@ -23,13 +23,6 @@ class MainPresenter constructor(
     private var ip: String = ""
     private var token: String = ""
 
-    init {
-        val user = dbRepository.getUser()
-        ip = user.ip ?: ""
-        token = user.token ?: ""
-        getAllJobs()
-    }
-
     private val _mainState = MutableStateFlow<MainUiState>(MainUiState.Loading)
     val mainState = _mainState.asStateFlow()
 
@@ -38,7 +31,15 @@ class MainPresenter constructor(
         _mainState.value = MainUiState.Loading
     }
 
-    fun getAllJobs() {
+    init {
+        val user = dbRepository.getUser()
+        ip = user.ip ?: ""
+        token = user.token ?: ""
+        getAllJobs()
+    }
+
+
+    private fun getAllJobs() {
         viewModelScope.launch(coroutineExceptionHandler) {
             repository.getAllJobs(ip, token).collect { result ->
                 result.isLoading {

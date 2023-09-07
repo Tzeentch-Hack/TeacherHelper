@@ -24,7 +24,7 @@ class MainRepositoryImpl constructor(private val httpClient: HttpClient) : MainR
     override suspend fun getAllJobs(ip: String, token: String): Flow<NetworkResultState<MainDto>> {
         return flowOf(
             safeApiCall {
-                httpClient.post(urlString = "http://$ip${Constants.PHOTO_UPLOAD}") {
+                httpClient.post(urlString = "http://$ip${Constants.GET_ALL_REQUEST}") {
                     header("Authorization", "Bearer $token")
                 }.body()
             })

@@ -8,10 +8,6 @@ CREATE TABLE MainDb (
 newUser:
 REPLACE INTO MainDb(name, password,token,ip)VALUES(?,?,?,?);
 
-
-updateToken:
-UPDATE MainDb SET token=?;
-
 getUser:
 SELECT * FROM MainDb LIMIT 1;
 
