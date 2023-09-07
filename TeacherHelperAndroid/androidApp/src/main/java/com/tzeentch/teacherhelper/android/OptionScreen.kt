@@ -19,7 +19,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.tzeentch.teacherhelper.presenters.MainPresenter
 import com.tzeentch.teacherhelper.utils.MainUiState
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.delay
 import org.koin.compose.koinInject
 
 
@@ -75,8 +82,25 @@ private fun OptionScreen(
             )
         }
     ) { innerPadding ->
+        val timer = remember {
+            mutableFloatStateOf(5000f)
+        }
         when (val result = presenter.mainState.collectAsState().value) {
             is MainUiState.ReceiveListOfTask -> {
+                LaunchedEffect(key1 = result.requestList) {
+                    var needTimerTask = false
+                    result.requestList.forEach {
+                        if (it.status == "process")
+                            needTimerTask = true
+                    }
+                    if (needTimerTask) {
+                        while (timer.floatValue > 0) {
+                            delay(1000)
+                            timer.floatValue -= 1000
+                        }
+                        presenter.updateAllJobs()
+                    }
+                }
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(result.requestList.size) {
                         Card(modifier = Modifier
@@ -89,7 +113,7 @@ private fun OptionScreen(
             }
 
             is MainUiState.Error -> {
-                onErrorAction()
+                //onErrorAction()
             }
 
             is MainUiState.Loading -> {

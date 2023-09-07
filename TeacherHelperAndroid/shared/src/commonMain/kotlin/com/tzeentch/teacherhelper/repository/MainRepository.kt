@@ -8,6 +8,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -24,7 +25,7 @@ class MainRepositoryImpl constructor(private val httpClient: HttpClient) : MainR
     override suspend fun getAllJobs(ip: String, token: String): Flow<NetworkResultState<MainDto>> {
         return flowOf(
             safeApiCall {
-                httpClient.post(urlString = "http://$ip${Constants.GET_ALL_REQUEST}") {
+                httpClient.get(urlString = "http://$ip${Constants.GET_ALL_REQUEST}") {
                     header("Authorization", "Bearer $token")
                 }.body()
             })

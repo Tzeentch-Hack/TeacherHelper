@@ -5,7 +5,6 @@ import com.tzeentch.teacherhelper.dto.UserData
 
 interface DbRepository {
     fun newUser(name: String, password: String, token: String, ip: String)
-    fun updateToken(token: String)
     fun getUser(): UserData
 }
 
@@ -24,11 +23,6 @@ class DbRepositoryImpl constructor(mainDbDriverFactory: MainDbDriverFactory) : D
         }
     }
 
-    override fun updateToken(token: String) {
-        dbQuery.transaction {
-            dbQuery.updateToken(token)
-        }
-    }
 
     override fun getUser(): UserData {
         val currentUser = dbQuery.getUser().executeAsOneOrNull()
