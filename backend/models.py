@@ -1,8 +1,13 @@
 from pydantic import BaseModel
 
 
-class RequestsIds(BaseModel):
-    request_ids: list[str]
+class RequestShort(BaseModel):
+    request_id: str
+    status: str
+
+
+class RequestsShortDatas(BaseModel):
+    requests_short_data: list[RequestShort]
 
 
 class ProcessedRequest(BaseModel):

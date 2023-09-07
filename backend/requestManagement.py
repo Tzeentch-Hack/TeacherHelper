@@ -54,10 +54,11 @@ def exist_in_processed_requests(request_id):
 
 def get_all_requests_ids_by_username(username):
     request_items = db.query(RequestItem).filter_by(username=username).all()
-    request_ids_list = []
+    request_short_data_list = []
     for request_item in request_items:
-        request_ids_list.append(request_item.request_id)
-    return request_ids_list
+        request_short_data = models.RequestShort(request_id=request_item.request_id, status=request_item.status)
+        request_short_data_list.append(request_short_data)
+    return request_short_data_list
 
 
 def delete_processed_request_by_id(request_id: str):

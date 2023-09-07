@@ -50,10 +50,10 @@ def create_request(current_user: Annotated[models.User, Depends(authorization.ge
     return {"request_id": request_id}
 
 
-@app.get("/all_requests", response_model=models.RequestsIds, tags=["Help generation"])
+@app.get("/all_requests", response_model=models.RequestsShortDatas, tags=["Help generation"])
 def get_all_requests(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)]):
-    requests_list = requestManagement.get_all_requests_ids_by_username(current_user.username)
-    return models.RequestsIds(request_ids=requests_list)
+    requests_short_data_list = requestManagement.get_all_requests_ids_by_username(current_user.username)
+    return models.RequestsShortDatas(requests_short_data=requests_short_data_list)
 
 
 @app.get("/is_request_exist", tags=["Debug functions"])
