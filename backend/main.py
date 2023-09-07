@@ -50,6 +50,12 @@ def create_request(current_user: Annotated[models.User, Depends(authorization.ge
     return {"request_id": request_id}
 
 
+@app.get("/all_requests", response_model=models.RequestsIds, tags=["Help generation"])
+def get_all_requests(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)]):
+    requests_list = requestManagement.get_all_requests_ids_by_username(current_user.username)
+    return models.RequestsIds(request_ids=requests_list)
+
+
 @app.get("/is_request_exist", tags=["Debug functions"])
 def delete_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
                    request_id: str):
@@ -66,17 +72,11 @@ def delete_request(current_user: Annotated[models.User, Depends(authorization.ge
     return response_body
 
 
-@app.get("/check_request", tags=["Help generation"])
+@app.get("/get_request", tags=["Help generation"])
 def check_request(current_user: Annotated[models.User, Depends(authorization.get_current_active_user)],
                   request_id: str):
     pr = requestManagement.get_processed_request(request_id)
     response_body = {"request_id": pr.request_id}
-    return response_body
-
-
-@app.get("/get_all_requests", tags=["Help generation"])
-def get_all_requests():
-    response_body = {"content": 0}
     return response_body
 
 

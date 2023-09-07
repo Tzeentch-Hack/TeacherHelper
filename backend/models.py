@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 
 
+class RequestsIds(BaseModel):
+    request_ids: list[str]
+
+
 class ProcessedRequest(BaseModel):
     username: str
     request_id: str
