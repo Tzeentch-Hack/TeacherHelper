@@ -67,6 +67,12 @@ fun injectionModule(enableNetworkLogs: Boolean = false) = module {
         }
     }
 
+    single<DbRepository> {
+        DbRepositoryImpl(
+            mainDbDriverFactory = get()
+        )
+    }
+
     single<MainRepository> { MainRepositoryImpl(httpClient = get()) }
     factoryOf(::MainPresenter)
 
@@ -78,10 +84,4 @@ fun injectionModule(enableNetworkLogs: Boolean = false) = module {
 
     single<DetailsRepository> { DetailsRepositoryImpl(httpClient = get()) }
     factoryOf(::DetailsPresenter)
-
-    single<DbRepository> {
-        DbRepositoryImpl(
-            mainDbDriverFactory = get()
-        )
-    }
 }
