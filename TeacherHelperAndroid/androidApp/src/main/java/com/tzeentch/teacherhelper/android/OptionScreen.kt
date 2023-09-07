@@ -17,10 +17,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -56,7 +59,12 @@ fun OptionScreen(
         }
     OptionScreen(
         onScanButtonClicked = { cameraPermission.launch(Manifest.permission.CAMERA) },
-        onCardClicked = {},
+        onCardClicked = { id ->
+            navController.navigate(
+                MainSections.DetailsSection.destination
+                    .replace("{$REQUEST_ID_KEY}", id)
+            )
+        },
         onErrorAction = { navController.navigate(AuthenticationSections.LoginSection.destination) }
     )
 }
@@ -83,12 +91,17 @@ private fun OptionScreen(
                         Text(
                             text = stringResource(id = R.string.option_screen_title),
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.W500
+                            fontWeight = FontWeight.W600,
+                            color = Color(0xFFC9D1C8)
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF304040)
+                )
             )
-        }
+        },
+        containerColor = Color(0xFF5B7065)
     ) { innerPadding ->
         val timer = remember {
             mutableFloatStateOf(5000f)
@@ -111,10 +124,20 @@ private fun OptionScreen(
                 }
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(result.requestList.size) {
-                        Card(modifier = Modifier
-                            .fillMaxSize()
-                            .clickable { onCardClicked(result.requestList[it].id) }) {
-                            Text(text = result.requestList[it].status)
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable { onCardClicked(result.requestList[it].id) },
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFF304040)
+                            )
+                        ) {
+                            Text(
+                                text = result.requestList[it].status,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.W400,
+                                color = Color(0xFFC9D1C8)
+                            )
                         }
                     }
                 }
@@ -140,7 +163,7 @@ private fun OptionScreen(
                     .size(50.dp),
                 onClick = { onScanButtonClicked() },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White
+                    backgroundColor = Color(0xFF304040)
                 ),
                 shape = CircleShape
             ) {
@@ -153,4 +176,14 @@ private fun OptionScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun OptionScreenPreview() {
+    OptionScreen(
+        onScanButtonClicked = {},
+        onCardClicked = {},
+        onErrorAction = {}
+    )
 }

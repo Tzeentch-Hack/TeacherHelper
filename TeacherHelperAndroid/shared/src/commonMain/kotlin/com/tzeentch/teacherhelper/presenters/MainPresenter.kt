@@ -27,6 +27,7 @@ class MainPresenter constructor(
     val mainState = _mainState.asStateFlow()
 
     private val viewModelScope = CoroutineScope(Dispatchers.Default)
+
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         _mainState.value = MainUiState.Loading
     }

@@ -1,5 +1,6 @@
 package com.tzeentch.teacherhelper.utils
 
+import com.tzeentch.teacherhelper.dto.DetailsDto
 import com.tzeentch.teacherhelper.dto.RequestDto
 
 sealed class AuthUiState {
@@ -22,7 +23,7 @@ sealed class MainUiState {
 sealed class DetailsUiState {
     object Loading : DetailsUiState()
 
-    data class ReceiveTask(val smt: String) : DetailsUiState()
+    data class ReceiveTask(val detailsDto: DetailsDto) : DetailsUiState()
 
     data class Error(val error: String) : DetailsUiState()
 }
