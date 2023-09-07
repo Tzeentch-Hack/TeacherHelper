@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -35,6 +34,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import com.tzeentch.teacherhelper.dto.DetailsDto
 import com.tzeentch.teacherhelper.presenters.DetailsPresenter
 import com.tzeentch.teacherhelper.utils.DetailsUiState
 import kotlinx.coroutines.CoroutineScope
@@ -49,13 +49,12 @@ fun DetailsScreen(
 ) {
     LaunchedEffect(key1 = Unit) { presenter.getRequests(id = requestId) }
 
-    DetailsScreen(
-        requestId = requestId,
-//        detailsDto = result.detailsDto
-    )
 
     when (val result = presenter.detailsState.collectAsState().value) {
         is DetailsUiState.ReceiveTask -> {
+            DetailsScreen(
+                detailsDto = result.detailsDto
+            )
         }
 
         is DetailsUiState.Loading -> {
@@ -71,8 +70,7 @@ fun DetailsScreen(
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsScreen(
-    requestId: String,
-//    detailsDto: DetailsDto
+    detailsDto: DetailsDto
 ) {
 
     val pagerState = rememberPagerState()
@@ -80,24 +78,35 @@ private fun DetailsScreen(
 
     val listOfDetailsTabs = listOf(
         DetailsTabItems.DetailsTab1 {
-            SlidesTab()
+            SlidesTab(
+                imagesUrls = detailsDto.images,
+                downloadingUrl = detailsDto.pttxUrl
+            )
         },
         DetailsTabItems.DetailsTab2 {
-            SummaryTab()
+            SummaryTab(
+                summaryText = detailsDto.shortText
+            )
         },
         DetailsTabItems.DetailsTab3 {
-            RecommendationsTab()
+            RecommendationsTab(
+                recommendations = detailsDto.teachingRecommendations
+            )
         },
         DetailsTabItems.DetailsTab4 {
-            EstimationTab()
+            EstimationTab(
+                estimations = detailsDto.lessonEstimates
+            )
         },
         DetailsTabItems.DetailsTab5 {
-            QuestionsTab()
+            QuestionsTab(
+                questions = detailsDto.possibleQuestions
+            )
         }
     )
 
     Scaffold(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().systemBarsPadding(),
         topBar = {
             Column(
                 modifier = Modifier.fillMaxWidth(),

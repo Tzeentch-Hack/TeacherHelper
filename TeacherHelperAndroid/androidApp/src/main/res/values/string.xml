@@ -22,7 +22,10 @@
 
     // Details Screen
     <string name="details_screen_title">Details</string>
-    
+
+    // Slides Tab
+    <string name="download_pptx_text">Download PPTX file</string>
+
     // Camera Screen
     <string name="clear">Clear</string>
     <string name="back">Back</string>

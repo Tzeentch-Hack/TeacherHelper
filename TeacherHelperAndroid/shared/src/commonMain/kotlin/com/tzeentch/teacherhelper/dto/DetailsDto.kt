@@ -7,5 +7,12 @@ import kotlinx.serialization.Serializable
 data class DetailsDto(
     @SerialName("username") val userName: String,
     @SerialName("request_id") val requestId: String,
-    @SerialName("status") val status: String
+    @SerialName("task_id") val taskId: String,
+    @SerialName("status") val status: String,
+    @SerialName("pptx_url") val pttxUrl: String,
+    @SerialName("images_url") val images: List<String>,
+    @SerialName("short_text") val shortText: String,
+    @SerialName("teaching_recommendation") val teachingRecommendations: List<String>,
+    @SerialName("lesson_estimates") val lessonEstimates: List<String>,
+    @SerialName("possible_questions") val possibleQuestions: List<String>,
 )
