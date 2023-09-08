@@ -130,6 +130,25 @@ private fun OptionScreen(
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        item {
+                            Button(
+                                modifier = Modifier
+                                    .padding(bottom = 16.dp)
+                                    .size(70.dp),
+                                onClick = { onScanButtonClicked() },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0xFF304040)
+                                ),
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_event_note_24),
+                                    contentDescription = stringResource(
+                                        id = R.string.image_description
+                                    )
+                                )
+                            }
+                        }
                         items(result.requestList.size) {
                             Card(
                                 modifier = Modifier
@@ -161,25 +180,6 @@ private fun OptionScreen(
                                         )
                                     }
                                 }
-                            }
-                        }
-                        item {
-                            Button(
-                                modifier = Modifier
-                                    .padding(bottom = 16.dp)
-                                    .size(70.dp),
-                                onClick = { onScanButtonClicked() },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color(0xFF304040)
-                                ),
-                                shape = CircleShape
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.baseline_event_note_24),
-                                    contentDescription = stringResource(
-                                        id = R.string.image_description
-                                    )
-                                )
                             }
                         }
                     }
