@@ -102,11 +102,7 @@ def convert_pdf_to_jpeg(pdf_path: str, output_name: str, output_folder: str = No
 def convert_pptx_to_jpg(input_path: str, output_name: str, output_folder: str = None, page: int = 1,
                         resolution: int = 120, quality: int = 90) -> None:
     # Step 1: Convert pptx to pdf
-    pdf_output_folder = None
-    if output_folder:
-        pdf_output_folder = os.path.join(output_folder, "temp")
-        os.makedirs(pdf_output_folder, exist_ok=True)
-
+    pdf_output_folder = output_folder
     pdf_name = os.path.splitext(os.path.basename(input_path))[0] + '.pdf'
     pdf_output_path = os.path.join(pdf_output_folder if pdf_output_folder else '', pdf_name)
 

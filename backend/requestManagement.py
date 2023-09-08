@@ -25,7 +25,8 @@ def get_processed_request(request_id) -> models.ProcessedRequest:
                                     pptx_url=request_item.pptx_url,
                                     short_text=request_item.short_text,
                                     lesson_estimates=request_item.lesson_estimates,
-                                    teaching_recommendations=request_item.teaching_recommendations
+                                    teaching_recommendations=request_item.teaching_recommendations,
+                                    possible_questions=request_item.possible_questions
                                     )
     return value
 
@@ -40,11 +41,18 @@ def get_processed_request(request_id) -> models.ProcessedRequest:
 #    return processed_requests
 
 
-#def change_status_of_processed_request(value: models.ProcessedRequest):
-#    request_item = db.query(RequestItem).filter_by(request_id=value["request_id"]).first()
-#    request_item.status = value["status"]
-#    request_item.username = value["username"]
-#    db.session.commit()
+def change_status_of_processed_request(value: models.ProcessedRequest):
+    request_item = db.query(RequestItem).filter_by(request_id=value.request_id).first()
+    request_item.status = value.status
+    request_item.username = value.username
+    request_item.images_url = value.images_url
+    request_item.pptx_url = value.pptx_url
+    request_item.short_text = value.short_text
+    request_item.lesson_estimates = value.lesson_estimates
+    request_item.teaching_recommendations = value.teaching_recommendations
+    request_item.possible_questions = value.possible_questions
+    db.add(request_item)
+    db.commit()
 
 
 def exist_in_processed_requests(request_id):
@@ -87,5 +95,6 @@ def add_processed_request(value: models.ProcessedRequest):
     obj.short_text = value.short_text
     obj.lesson_estimates = value.lesson_estimates
     obj.teaching_recommendations = value.teaching_recommendations
+    obj.possible_questions = value.possible_questions
     db.add(obj)
     db.commit()

@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Load .env data and set the API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
@@ -31,6 +30,7 @@ class TextGenerator:
 
         for _ in range(retries):
             try:
+                print('making openai request...')
                 completions = openai.ChatCompletion.create(
                     model=self.model,
                     max_tokens=self.max_tokens,
@@ -39,6 +39,7 @@ class TextGenerator:
                         {"role": "user", "content": prompt},
                     ],
                 )
+                print('ended openai request...')
                 return completions.choices[0].message.content
             except (openai.error.RateLimitError, openai.error.APIConnectionError, openai.error.ServiceUnavailableError):
                 print(
