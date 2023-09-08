@@ -17,6 +17,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.FloatingActionButtonDefaults
+import androidx.compose.material.FloatingActionButtonElevation
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -113,42 +116,15 @@ private fun OptionScreen(
                 .fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-
-            }
             when (val result = presenter.mainState.collectAsState().value) {
                 is MainUiState.ReceiveListOfTask -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                        .padding(20.dp),
+                            .padding(top = 20.dp, start = 20.dp, end = 20.dp, bottom = 100.dp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        item {
-                            Button(
-                                modifier = Modifier
-                                    .padding(bottom = 16.dp)
-                                    .size(70.dp),
-                                onClick = { onScanButtonClicked() },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color(0xFF304040)
-                                ),
-                                shape = CircleShape
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.baseline_event_note_24),
-                                    contentDescription = stringResource(
-                                        id = R.string.image_description
-                                    )
-                                )
-                            }
-                        }
                         items(result.requestList.size) {
                             Card(
                                 modifier = Modifier
@@ -191,6 +167,27 @@ private fun OptionScreen(
 
                 is MainUiState.Loading -> {
                     RotatingProgressBar()
+                }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .size(70.dp),
+                    onClick = { onScanButtonClicked() },
+                    backgroundColor = Color(0xFF304040),
+                    shape = CircleShape
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_event_note_24),
+                        contentDescription = stringResource(
+                            id = R.string.image_description
+                        )
+                    )
                 }
             }
         }
