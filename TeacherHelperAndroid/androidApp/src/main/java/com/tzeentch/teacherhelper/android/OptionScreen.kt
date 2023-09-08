@@ -119,30 +119,16 @@ private fun OptionScreen(
                     .fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                Button(
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                        .size(70.dp),
-                    onClick = { onScanButtonClicked() },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF304040)
-                    ),
-                    shape = CircleShape
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.baseline_event_note_24),
-                        contentDescription = stringResource(
-                            id = R.string.image_description
-                        )
-                    )
-                }
+
             }
             when (val result = presenter.mainState.collectAsState().value) {
                 is MainUiState.ReceiveListOfTask -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp)
+                        .padding(20.dp),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(result.requestList.size) {
                             Card(
@@ -175,6 +161,25 @@ private fun OptionScreen(
                                         )
                                     }
                                 }
+                            }
+                        }
+                        item {
+                            Button(
+                                modifier = Modifier
+                                    .padding(bottom = 16.dp)
+                                    .size(70.dp),
+                                onClick = { onScanButtonClicked() },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = Color(0xFF304040)
+                                ),
+                                shape = CircleShape
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.baseline_event_note_24),
+                                    contentDescription = stringResource(
+                                        id = R.string.image_description
+                                    )
+                                )
                             }
                         }
                     }
