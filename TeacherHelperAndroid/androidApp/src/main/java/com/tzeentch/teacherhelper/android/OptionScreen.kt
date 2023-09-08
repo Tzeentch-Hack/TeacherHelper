@@ -138,23 +138,6 @@ private fun OptionScreen(
             }
             when (val result = presenter.mainState.collectAsState().value) {
                 is MainUiState.ReceiveListOfTask -> {
-                    val timer = remember {
-                        mutableFloatStateOf(result.timer)
-                    }
-                    LaunchedEffect(key1 = result.requestList) {
-                        var needTimerTask = false
-                        result.requestList.forEach {
-                            if (it.status == "process")
-                                needTimerTask = true
-                        }
-                        if (needTimerTask) {
-                            while (timer.floatValue > 0) {
-                                delay(1000)
-                                timer.floatValue -= 1000
-                            }
-                            presenter.updateAllJobs()
-                        }
-                    }
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -180,7 +163,7 @@ private fun OptionScreen(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    if (result.requestList[it].status != "ready") {
+                                    if (result.requestList[it].status != "Succeeded") {
                                         TypewriterText(texts = listOf(result.requestList[it].status))
                                     } else {
                                         Text(

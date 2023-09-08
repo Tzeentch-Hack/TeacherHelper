@@ -17,7 +17,7 @@ import org.koin.core.component.KoinComponent
 
 class DetailsPresenter constructor(
     private val repository: DetailsRepository,
-    private val dbRepository: DbRepository
+    dbRepository: DbRepository
 ) : KoinComponent {
 
     private var ip: String = ""

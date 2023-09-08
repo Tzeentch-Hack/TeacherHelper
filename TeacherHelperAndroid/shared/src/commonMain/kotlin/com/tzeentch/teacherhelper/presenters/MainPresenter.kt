@@ -1,5 +1,6 @@
 package com.tzeentch.teacherhelper.presenters
 
+import com.tzeentch.teacherhelper.dto.RequestDto
 import com.tzeentch.teacherhelper.repository.DbRepository
 import com.tzeentch.teacherhelper.repository.MainRepository
 import com.tzeentch.teacherhelper.utils.CameraUiState
@@ -10,9 +11,13 @@ import com.tzeentch.teacherhelper.utils.onSuccess
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 
 class MainPresenter constructor(
@@ -22,6 +27,8 @@ class MainPresenter constructor(
 
     private var ip: String = ""
     private var token: String = ""
+
+    private lateinit var job: Job
 
     private val _mainState = MutableStateFlow<MainUiState>(MainUiState.Loading)
     val mainState = _mainState.asStateFlow()
@@ -46,6 +53,12 @@ class MainPresenter constructor(
                 result.isLoading {
                     _mainState.value = MainUiState.Loading
                 }.onSuccess {
+                    for (request in it.requestList) {
+                        if (request.status != "Succeeded") {
+                            job = startRepeatingJob(10000)
+                            break
+                        }
+                    }
                     _mainState.value = MainUiState.ReceiveListOfTask(it.requestList)
                 }.onFailure {
                     _mainState.value = MainUiState.Error(it.message.toString())
@@ -54,7 +67,16 @@ class MainPresenter constructor(
         }
     }
 
-    fun updateAllJobs() {
+    private fun startRepeatingJob(timeInterval: Long): Job {
+        return CoroutineScope(Dispatchers.Default).launch {
+            withContext(NonCancellable) {
+                delay(timeInterval)
+                updateAllJobs()
+            }
+        }
+    }
+
+    private fun updateAllJobs() {
         viewModelScope.launch(coroutineExceptionHandler) {
             repository.getAllJobs(ip, token).collect { result ->
                 result.onSuccess {

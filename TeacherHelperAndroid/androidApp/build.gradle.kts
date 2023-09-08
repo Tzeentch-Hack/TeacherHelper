@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.exifinterface:exifinterface:1.3.6")
     val nav_version = "2.7.1"
     implementation(project(":shared"))
     implementation("androidx.compose.ui:ui:1.4.3")
@@ -48,7 +49,6 @@ dependencies {
     implementation("androidx.compose.material:material:1.5.0")
     implementation("androidx.compose.material3:material3:1.1.1")
     implementation("androidx.activity:activity-compose:1.7.1")
-    implementation("com.google.mlkit:text-recognition:16.0.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("io.insert-koin:koin-android:3.4.0")
     implementation("io.insert-koin:koin-androidx-compose:3.4.3")
