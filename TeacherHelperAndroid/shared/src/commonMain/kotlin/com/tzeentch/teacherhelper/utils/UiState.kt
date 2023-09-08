@@ -15,8 +15,7 @@ sealed class AuthUiState {
 sealed class MainUiState {
     object Loading : MainUiState()
 
-    data class ReceiveListOfTask(val requestList: List<RequestDto>, val timer: Float = 5000f) :
-        MainUiState()
+    data class ReceiveListOfTask(val requestList: List<RequestDto>) : MainUiState()
 
     data class Error(val error: String) : MainUiState()
 }

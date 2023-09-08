@@ -55,7 +55,7 @@ class MainPresenter constructor(
                 }.onSuccess {
                     for (request in it.requestList) {
                         if (request.status != "Succeeded") {
-                            job = startRepeatingJob(10000)
+                            startRepeatingJob(6000)
                             break
                         }
                     }
@@ -67,9 +67,9 @@ class MainPresenter constructor(
         }
     }
 
-    private fun startRepeatingJob(timeInterval: Long): Job {
-        return CoroutineScope(Dispatchers.Default).launch {
-            withContext(NonCancellable) {
+    private fun startRepeatingJob(timeInterval: Long) {
+        viewModelScope.launch {
+            while (true) {
                 delay(timeInterval)
                 updateAllJobs()
             }
