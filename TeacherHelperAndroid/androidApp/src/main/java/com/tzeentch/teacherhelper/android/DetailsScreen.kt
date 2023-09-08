@@ -1,5 +1,6 @@
 package com.tzeentch.teacherhelper.android
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -106,7 +107,9 @@ private fun DetailsScreen(
     )
 
     Scaffold(
-        modifier = Modifier.fillMaxWidth().systemBarsPadding(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .systemBarsPadding(),
         topBar = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -149,6 +152,9 @@ private fun DetailsScreen(
             contentAlignment = Alignment.TopCenter
         ) {
             DetailsTabContent(tabs = listOfDetailsTabs, pagerState = pagerState)
+            AnimatedVisibility(visible = detailsDto.images.isEmpty()) {
+                RotatingProgressBar()
+            }
         }
     }
 }
