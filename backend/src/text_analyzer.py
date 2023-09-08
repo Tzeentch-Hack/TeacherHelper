@@ -23,6 +23,7 @@ class TextAnalyzer:
                 self.translator.translate(input_text, source_language, 'en'), source_language)
 
     def _gpt_query(self, system_instruction, input_text):
+        print('beginning gpt_query')
         translated_text, detected_language = self._translate_to_en(input_text)
         prompt = self.prompt + translated_text
         gpt_response = self.text_generator.get_response(system=system_instruction, prompt=prompt)
@@ -64,10 +65,10 @@ class TextAnalyzer:
 
         gpt_response_source, gpt_response_en = self._gpt_query(system_instruction, "Topics to describe:" + topics_str)
 
-        # Modified regex pattern to capture numbered descriptions better
-        pattern = r'(\d+\.\s*[^0-9]+)(?=\d+\.|$)'
-        descriptions = [match.group(1).split('.')[1].strip().split(": ")[1] for match in
-                        re.finditer(pattern, gpt_response_en)]
+        # Simplified regex pattern to capture descriptions after the colon
+        pattern = r':\s*([^:\n]+)'
+        print('description gpt_response_en:', gpt_response_en)
+        descriptions = [match.group(1).strip() for match in re.finditer(pattern, gpt_response_en)]
 
         return descriptions
 
@@ -88,12 +89,14 @@ class TextAnalyzer:
         return self._parse_list_output(gpt_response_source)
 
     def analyze_presentation(self, input_text):
+        print('analyzing presentation...')
         with ThreadPoolExecutor(max_workers=1) as executor:
             future_presentation = executor.submit(self.get_presentation_parts, input_text)
             presentation_result = future_presentation.result()
         return presentation_result
 
     def analyze_text(self, input_text):
+        print('beginning to analyze text...')
         with ThreadPoolExecutor(
                 max_workers=3) as executor:
             future_to_function = {
